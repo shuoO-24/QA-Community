@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %} User Profile - {{ user_.username }} {% endblock %}
+
+{% block head %}
+  <link href="{% static 'css/profile.css' %}" rel="stylesheet">
+  <script src="{% static 'js/jquery.bullseye-1.0-min.js' %}"></script>
+{% endblock head %}
+
+{% block main %}
+  <!-- user 是当前登录用户，user_ 是根据用户 ID 查到的用户 -->
+  <!-- 当二者是同一个对象或者当前登录用户是超级用户时，才会提供编辑用户资料的地址 -->
+  {% if user == user_ or user.is_admin %}
+    <div class="page-header">
+      <a href="{% url 'user_profile:update_profile' user_id %}">{% trans 'Edit' %}</a>
+    </div>
+  {% endif %}
+  <div class="profile">
+    <div class="row">
+      <div class="col-md-9">
+        <h4>{{ user_.username }}</h4>
+        <p>{% trans 'Your are the No.' %} {{ user_.id }} {% trans 'user.' %}</p>
+        <p>{% trans 'Last login at' %} {{ user_.last_login }} .</p>
+        <div class="stream-update"></div>
+        <div class="load">
+          <img style="height:12%" src="{{MEDIA_URL}}{{profile.avatar.url}}" alt="" 
+              class="img-circle img-responsive">
+        </div>
+        <br>
+        <div class="float-right">
+          <ul>
+            <li>URL : {{ profile.url | default_if_none:'' }}</li>
+            <li>LOCATION : {{ profile.location | default_if_none:'' }}</li>
+            <li>JOB : {{ profile.job | default_if_none:'' }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock main %}
